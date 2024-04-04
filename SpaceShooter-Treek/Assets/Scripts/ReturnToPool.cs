@@ -1,3 +1,11 @@
+//////////////////////////////////////////////
+//Assignment/Lab/Project: SpaceShooter_Treek
+//Name: Ahmed Treek
+//Section: SGD.213.0021
+//Instructor: Aurore Locklear
+//Date: 3/31/2024
+/////////////////////////////////////////////
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +22,6 @@ public class ReturnToPool : MonoBehaviour
 
     private void ReturnToPoolManager()
     {
-        ammoPool.Release(gameObject);
+        ammoPool.Release(gameObject); //releases the pooled gameobject
     }
 }

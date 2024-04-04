@@ -1,54 +1,50 @@
+//////////////////////////////////////////////
+//Assignment/Lab/Project: SpaceShooter_Treek
+//Name: Ahmed Treek
+//Section: SGD.213.0021
+//Instructor: Aurore Locklear
+//Date: 3/31/2024
+/////////////////////////////////////////////
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 
 
 public class EnemyPlane : MonoBehaviour
 {
     private Transform player;
-    [SerializeField] private Transform fireLocation;
-    private float shootDelay = 2.0f; // Delay in seconds between shots
-    private float attackRange = 2;
-    private float lastShotTime;
-    private float speed = 20f;
+    private float speed = 35f;
 
     private int health;
 
     private Rigidbody rb;
-    IObjectPool<GameObject> ammoPool;
+    private SpawnManager spawnManager;
+    private PlayerMovement playerM;
+
+    private void Awake()
+    {
+        spawnManager = GameObject.FindAnyObjectByType<SpawnManager>(); //on awake find the spawn manager
+        playerM = GameObject.FindAnyObjectByType<PlayerMovement>(); //on awake find the player script component
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        ammoPool = FindAnyObjectByType<PoolManager>().GetComponent<PoolManager>().AmmoPool;
-        player = GameObject.Find("Player").transform;
+        player = GameObject.Find("Player").transform; //finds the players position
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(transform.position, player.position) > attackRange)
-        {
-            Vector3 direction = player.position - transform.position;
+      
+            Vector3 direction = player.position - transform.position; //sets the direction to the players position from the enemies position
             direction.Normalize(); 
 
-            transform.Translate(direction * speed * Time.deltaTime);
-            transform.LookAt(player);
-        }
-        else if(Vector3.Distance(transform.position, player.position) < attackRange)
-        {
-            transform.LookAt(player);
-
-            if (Time.time - lastShotTime >= shootDelay)
-            {
-                    GameObject ammo = ammoPool.Get();
-                    ammo.transform.position = fireLocation.transform.position;
-
-                    ammo.GetComponent<Rigidbody>().velocity = transform.forward * 200f;
-                    lastShotTime = Time.time;
- 
-            }
-        }
+            transform.Translate(direction * speed * Time.deltaTime); //calculates and translates the enemy towards the player
+            transform.LookAt(player); //makes the enemy face the player
+        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -59,6 +55,8 @@ public class EnemyPlane : MonoBehaviour
             Destroy(collision.gameObject);
             if(health < 0)
             {
+                spawnManager.enemyCount -= 1;
+                playerM.score += 50; //add score whenerver the enemy is shot with a laser
                 Destroy(this.gameObject);
             }
         }

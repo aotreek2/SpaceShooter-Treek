@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - Laser
   - DeathZone
+  - kamikaze
+  - Fighter
+  - PickUp
   layers:
   - Default
   - TransparentFX
